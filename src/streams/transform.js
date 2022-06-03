@@ -6,11 +6,18 @@ export const transform = async () => {
     const transform = new Transform({
         transform(chunk, _, callback) {
             const reverseChunk = chunk.toString().trim().split('').reverse().join('');
-            this.push(reverseChunk + '\n');
-            callback();
+            callback(null, reverseChunk + '\n');
         }
     })
-    readable.pipe(transform).pipe(writable);
+    pipeline(
+        readable,
+        transform,
+        writable,
+        (err) => {
+            console.log(err.message);
+        }
+    
+    )
 };
 
 transform();
