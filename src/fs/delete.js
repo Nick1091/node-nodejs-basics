@@ -6,11 +6,23 @@ const __dirname = dirname(__filename)
 const filePath = path.join(__dirname, 'files', 'fileToRemove.txt')
 
 export const remove = async () => {
+    const isFiles = async () => {
+        try {
+            await access(filePath);
+            return true;
+        } catch {
+            return false;
+        }
+    }
     try{
-        await access(filePath);
-        await unlink(filePath);
+        if(await isFiles()){
+            await unlink(filePath);
+        }
+        else{
+            throw new Error('FS operation failed')
+        }
     } catch (err) {
-        console.log(new Error('FS operation failed'))
+        console.log(err.message);
     }
 };
 
